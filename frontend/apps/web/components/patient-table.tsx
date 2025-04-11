@@ -4,22 +4,8 @@ import { useQuery } from '@tanstack/react-query'
 import { getCustomFields, getPatients, usePatientApi } from '@/lib/patient-api'
 import { PaginatedPatientListList } from '@frontend/types/api'
 import { PaginatedPatientCustomFieldList } from '@frontend/types/api'
-
-import {
-    ColumnDef,
-    flexRender,
-    getCoreRowModel,
-    useReactTable,
-} from "@tanstack/react-table"
-
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from "@frontend/ui/components/table"
+import { DataTable } from './data-table'
+import { patientColumns } from './patient-columns'
 
 export function PatientTable() {
     const { session } = usePatientApi()
@@ -27,23 +13,31 @@ export function PatientTable() {
     const { data, isLoading, isError, error } = useQuery<PaginatedPatientListList>({
         queryKey: ['patients'],
         queryFn: () => {
-            console.log('Query function executing')
             return getPatients(session)
         },
-        enabled: !!session, // Only run the query if we have a session
+        enabled: !!session,
     })
 
     const { data: customFields, isLoading: customFieldsLoading } = useQuery<PaginatedPatientCustomFieldList>({
         queryKey: ['customFields'],
         queryFn: () => {
-            console.log('Custom fields query executing with session:', session) // Debug session in custom fields query
             return getCustomFields(session)
         },
-        enabled: !!session, // Add enabled condition here too
+        enabled: !!session,
     })
 
-    console.log(data)
-    console.log(customFields)
+    const patientColumnsWithCustomFields = [...patientColumns];
+    if (customFields) {
+        customFields.results.forEach((customField) => {
+            patientColumnsWithCustomFields.push({
+                header: customField.name,
+                cell: ({ row }) => {
+                    return row.original.custom_field_values.find((field) => field.custom_field === customField.name)?.value
+                }
+            })
+        })
+    }
+
     if (isLoading) {
         console.log('PatientTable is loading')
         return <div className="p-4 text-center">Loading patients...</div>
@@ -59,10 +53,8 @@ export function PatientTable() {
     }
 
     return (
-        <div className="p-4">
-            <h2 className="text-lg font-medium mb-2">Patient Data</h2>
-            <p>Check the console to see the fetched patient data.</p>
-        </div>
-
+        <>
+            <DataTable columns={patientColumnsWithCustomFields} data={data?.results || []} />
+        </>
     )
 }
