@@ -2,9 +2,11 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type UserChangePassword = {
-    password: string;
-    password_new: string;
-    password_retype: string;
-};
-
+/**
+ * * `TEXT` - Text
+ * * `NUMBER` - Number
+ */
+export enum FieldTypeEnum {
+    TEXT = 'TEXT',
+    NUMBER = 'NUMBER',
+}

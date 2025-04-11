@@ -2,9 +2,11 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type UserChangePassword = {
-    password: string;
-    password_new: string;
-    password_retype: string;
-};
-
+/**
+ * * `HOME` - Home
+ * * `WORK` - Work
+ */
+export enum AddressTypeEnum {
+    HOME = 'HOME',
+    WORK = 'WORK',
+}

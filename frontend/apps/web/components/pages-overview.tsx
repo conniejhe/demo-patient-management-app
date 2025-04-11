@@ -39,18 +39,6 @@ export function PagesOverview() {
               Profile
             </Link>
           </li>
-
-          <li>
-            <Link href="/change-password" className="text-purple-600 underline">
-              Change password
-            </Link>
-          </li>
-
-          <li>
-            <Link href="/delete-account" className="text-purple-600 underline">
-              Delete account
-            </Link>
-          </li>
         </ul>
       </li>
 

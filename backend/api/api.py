@@ -14,10 +14,11 @@ from .serializers import (
     UserCurrentSerializer,
     PatientCreateSerializer,
     PatientListSerializer,
+    PatientCustomFieldSerializer,
 )
 
 User = get_user_model()
-from .models import Patient
+from .models import Patient, CustomField
 
 
 class UserViewSet(
@@ -65,22 +66,13 @@ class UserViewSet(
     @action(["get", "put", "patch"], detail=False)
     def me(self, request, *args, **kwargs):
         if request.method == "GET":
-            serializer = self.get_serializer(self.request.user)
+            serializer = self.get_serializer(request.user)
             return Response(serializer.data)
-        elif request.method == "PUT":
-            serializer = self.get_serializer(
-                self.request.user, data=request.data, partial=False
-            )
-            serializer.is_valid(raise_exception=True)
-            serializer.save()
-            return Response(serializer.data)
-        elif request.method == "PATCH":
-            serializer = self.get_serializer(
-                self.request.user, data=request.data, partial=True
-            )
-            serializer.is_valid(raise_exception=True)
-            serializer.save()
-            return Response(serializer.data)
+
+        serializer = self.get_serializer(request.user, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
 
     @extend_schema(
         responses={
@@ -92,16 +84,14 @@ class UserViewSet(
     def change_password(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-
-        self.request.user.set_password(serializer.data["password_new"])
-        self.request.user.save()
-
+        serializer.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(["delete"], url_path="delete-account", detail=False)
     def delete_account(self, request, *args, **kwargs):
-        self.request.user.delete()
+        request.user.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 class PatientViewSet(viewsets.ModelViewSet):
     """
@@ -110,26 +100,32 @@ class PatientViewSet(viewsets.ModelViewSet):
     Provides CRUD operations for patients and their related data.
     """
     queryset = Patient.objects.all()
-    # permission_classes = [IsAuthenticated]  # Commented out for testing
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        """
-        Return all patients for testing purposes.
-        TODO: Remember to update this to filter by provider.
-        """
-        return self.queryset
+        return self.queryset.filter(provider=self.request.user)
 
     def get_serializer_class(self):
-        """
-        Use different serializers for different actions.
-        """
-        if self.action in ['create', 'update', 'partial_update']:
-            return PatientCreateSerializer
-        return PatientListSerializer
+        if self.action in ["list", "retrieve"]:
+            return PatientListSerializer
+        return PatientCreateSerializer
 
     def perform_create(self, serializer):
-        """
-        Set a default provider for testing purposes.
-        TODO: Remember to update this to use request.user.
-        """
-        serializer.save(provider_id=1)  # Using the first user as default provider for testing
+        serializer.save(provider=self.request.user)
+
+
+class CustomFieldViewSet(viewsets.ModelViewSet):
+    """
+    ViewSet for managing custom fields.
+    
+    Provides CRUD operations for custom fields.
+    """
+    queryset = CustomField.objects.all()
+    serializer_class = PatientCustomFieldSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return self.queryset.filter(provider=self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(provider=self.request.user)
