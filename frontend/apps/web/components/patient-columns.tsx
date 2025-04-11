@@ -1,26 +1,70 @@
 "use client"
 
 import { ColumnDef } from "@tanstack/react-table"
+import { ArrowUpDown } from "lucide-react"
 import { PatientList, PatientAddressList } from "@frontend/types/api"
 import { Badge } from "@frontend/ui/components/badge"
 import { StatusEnum } from "@frontend/types/api"
-
+import { Button } from "@frontend/ui/components/button"
 
 export const patientColumns: ColumnDef<PatientList>[] = [
     {
-        header: "Name",
+        header: ({ column }) => {
+            return (
+                <Button
+                    variant="ghost"
+                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                >
+                    Name
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+            )
+        },
         accessorKey: "full_name",
+        cell: ({ row }) => {
+            return <div className="min-w-[200px]">{row.original.full_name}</div>
+        }
     },
     {
-        header: "First Name",
+        header: ({ column }) => {
+            return (
+                <Button
+                    variant="ghost"
+                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                >
+                    First Name
+                    <ArrowUpDown />
+                </Button>
+            )
+        },
         accessorKey: "first_name",
     },
     {
-        header: "Middle Name",
+        header: ({ column }) => {
+            return (
+                <Button
+                    variant="ghost"
+                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                >
+                    Middle Name
+                    <ArrowUpDown />
+                </Button>
+            )
+        },
         accessorKey: "middle_name",
     },
     {
-        header: "Last Name",
+        header: ({ column }) => {
+            return (
+                <Button
+                    variant="ghost"
+                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                >
+                    Last Name
+                    <ArrowUpDown />
+                </Button>
+            )
+        },
         accessorKey: "last_name",
     },
     {
@@ -30,6 +74,9 @@ export const patientColumns: ColumnDef<PatientList>[] = [
     {
         header: "Status",
         accessorKey: "status",
+        filterFn: (row, id, value) => {
+            return value.includes(row.getValue(id))
+        },
         cell: ({ row }) => {
             const status = row.original.status
             const variantMap: Record<StatusEnum, "success" | "warning" | "error" | "info"> = {
