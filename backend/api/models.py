@@ -96,6 +96,7 @@ class Patient(models.Model):
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
 
+    @property
     def full_name(self):
         if self.middle_name:
             return f"{self.first_name} {self.middle_name} {self.last_name}"
@@ -131,6 +132,10 @@ class PatientAddress(models.Model):
         db_table = "patient_addresses"
         verbose_name = _("patient address")
         verbose_name_plural = _("patient addresses")
+
+    @property
+    def full_address(self):
+        return f"{self.street_address}, {self.city}, {self.state} {self.postal_code}"
 
     def __str__(self):
         return f"{self.street_address}, {self.city}, {self.state} {self.postal_code}"
@@ -183,7 +188,8 @@ class PatientCustomFieldValue(models.Model):
         self.clean()
         super().save(*args, **kwargs)
 
-    def get_value(self):
+    @property
+    def value(self):
         if self.custom_field.field_type == CustomFieldType.NUMBER:
             return self.number_value
         return self.text_value

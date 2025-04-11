@@ -12,9 +12,12 @@ from .serializers import (
     UserCreateSerializer,
     UserCurrentErrorSerializer,
     UserCurrentSerializer,
+    PatientCreateSerializer,
+    PatientListSerializer,
 )
 
 User = get_user_model()
+from .models import Patient
 
 
 class UserViewSet(
@@ -99,3 +102,34 @@ class UserViewSet(
     def delete_account(self, request, *args, **kwargs):
         self.request.user.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+class PatientViewSet(viewsets.ModelViewSet):
+    """
+    ViewSet for managing patient records.
+    
+    Provides CRUD operations for patients and their related data.
+    """
+    queryset = Patient.objects.all()
+    # permission_classes = [IsAuthenticated]  # Commented out for testing
+
+    def get_queryset(self):
+        """
+        Return all patients for testing purposes.
+        TODO: Remember to update this to filter by provider.
+        """
+        return self.queryset
+
+    def get_serializer_class(self):
+        """
+        Use different serializers for different actions.
+        """
+        if self.action in ['create', 'update', 'partial_update']:
+            return PatientCreateSerializer
+        return PatientListSerializer
+
+    def perform_create(self, serializer):
+        """
+        Set a default provider for testing purposes.
+        TODO: Remember to update this to use request.user.
+        """
+        serializer.save(provider_id=1)  # Using the first user as default provider for testing
