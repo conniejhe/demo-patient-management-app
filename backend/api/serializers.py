@@ -108,10 +108,6 @@ class UserCreateSerializer(serializers.ModelSerializer):
         with transaction.atomic():
             user = User.objects.create_user(**validated_data)
 
-            # By default newly registered accounts are inactive.
-            user.is_active = False
-            user.save(update_fields=["is_active"])
-
         return user
 
 

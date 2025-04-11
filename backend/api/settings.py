@@ -77,11 +77,11 @@ TEMPLATES = [
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "USER": environ.get("DATABASE_USER", "postgres"),
-        "PASSWORD": environ.get("DATABASE_PASSWORD", "change-password"),
-        "NAME": environ.get("DATABASE_NAME", "db"),
-        "HOST": environ.get("DATABASE_HOST", "db"),
-        "PORT": "5432",
+        "USER": environ.get("POSTGRES_USER", "postgres"),
+        "PASSWORD": environ.get("POSTGRES_PASSWORD", "change-password"),
+        "NAME": environ.get("POSTGRES_DB", "db"),
+        "HOST": environ.get("POSTGRES_HOST", "db"),
+        "PORT": environ.get("POSTGRES_PORT", "5432"),
         "TEST": {
             "NAME": "test",
         },
