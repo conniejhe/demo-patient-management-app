@@ -13,7 +13,7 @@ import {
 import { Input } from "@frontend/ui/components/input"
 import { UserPlus, Plus } from "lucide-react"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm, useFieldArray } from "react-hook-form"
+import { useForm, useFieldArray, Control } from "react-hook-form"
 import * as z from "zod"
 import {
     Form,
@@ -45,56 +45,15 @@ import { createPatient, usePatientApi } from "@/lib/patient-api"
 import { useState } from "react"
 import { useToast } from "@frontend/ui/hooks/use-toast"
 import { useQueryClient } from "@tanstack/react-query"
-
-const addressSchema = z.object({
-    address_type: z.nativeEnum(AddressTypeEnum, {
-        required_error: "Please select an address type.",
-    }),
-    street_address: z.string().min(1, {
-        message: "Street address is required.",
-    }),
-    city: z.string().min(1, {
-        message: "City is required.",
-    }),
-    state: z.nativeEnum(StateEnum, {
-        required_error: "Please select a state.",
-    }),
-    postal_code: z.string().min(1, {
-        message: "Postal code is required.",
-    }),
-    is_primary: z.boolean().default(false),
-})
-
-// Create a dynamic schema based on custom fields
-const createFormSchema = (customFields: PatientCustomField[]) => {
-    return z.object({
-        first_name: z.string().min(2, {
-            message: "First name is required and must be at least 2 characters.",
-        }),
-        middle_name: z.string().optional(),
-        last_name: z.string().min(2, {
-            message: "Last name is required and must be at least 2 characters.",
-        }),
-        date_of_birth: z.date({
-            required_error: "Date of birth is required.",
-        }),
-        status: z.nativeEnum(StatusEnum, {
-            required_error: "Please select a status.",
-        }),
-        addresses: z.array(addressSchema).min(1, {
-            message: "At least one address is required.",
-        }),
-        custom_fields: z.record(z.string(), z.union([z.string(), z.number(), z.null()]).optional()).optional(),
-    });
-};
+import { patientFormSchema } from "./patient-form-schemas"
 
 interface RegisterPatientFormProps {
     customFields: PatientCustomField[]
 }
 
+type FormValues = z.infer<typeof patientFormSchema>;
+
 export function RegisterPatientForm({ customFields }: RegisterPatientFormProps) {
-    const formSchema = createFormSchema(customFields);
-    type FormValues = z.infer<typeof formSchema>;
     const { session } = usePatientApi();
     const { toast } = useToast();
     const queryClient = useQueryClient();
@@ -112,7 +71,7 @@ export function RegisterPatientForm({ customFields }: RegisterPatientFormProps) 
     });
 
     const form = useForm<FormValues>({
-        resolver: zodResolver(formSchema),
+        resolver: zodResolver(patientFormSchema),
         defaultValues: {
             first_name: "",
             middle_name: "",
@@ -128,11 +87,6 @@ export function RegisterPatientForm({ customFields }: RegisterPatientFormProps) 
             }],
             custom_fields: initialCustomFields,
         },
-    })
-
-    const { fields, append, remove } = useFieldArray({
-        control: form.control,
-        name: "addresses",
     })
 
     async function onSubmit(values: FormValues) {
@@ -152,7 +106,7 @@ export function RegisterPatientForm({ customFields }: RegisterPatientFormProps) 
                                 number_value: null
                             }
 
-                            if (customField.field_type === 'NUMBER') {
+                            if (customField.field_type === FieldTypeEnum.NUMBER) {
                                 fieldValue.number_value = value.toString()
                             } else {
                                 fieldValue.text_value = value.toString()
@@ -173,8 +127,8 @@ export function RegisterPatientForm({ customFields }: RegisterPatientFormProps) 
 
             // Show success message
             toast({
-                title: "Patient created",
-                description: "The patient has been successfully created.",
+                title: "New Patient Created",
+                description: "The patient has been successfully registered in the system.",
             });
             form.reset();
 
@@ -214,174 +168,12 @@ export function RegisterPatientForm({ customFields }: RegisterPatientFormProps) 
                 </DialogHeader>
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 overflow-y-auto pr-6">
-                        <div className="grid grid-cols-3 gap-4">
-                            <FormField
-                                control={form.control}
-                                name="first_name"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>First Name *</FormLabel>
-                                        <FormControl>
-                                            <Input placeholder="Enter first name" {...field} />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                            <FormField
-                                control={form.control}
-                                name="middle_name"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Middle Name</FormLabel>
-                                        <FormControl>
-                                            <Input placeholder="Enter middle name" {...field} />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                            <FormField
-                                control={form.control}
-                                name="last_name"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Last Name *</FormLabel>
-                                        <FormControl>
-                                            <Input placeholder="Enter last name" {...field} />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                        </div>
-                        <div className="grid grid-cols-2 gap-4">
-                            <FormField
-                                control={form.control}
-                                name="date_of_birth"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Date of Birth *</FormLabel>
-                                        <Popover>
-                                            <PopoverTrigger asChild>
-                                                <FormControl>
-                                                    <Button
-                                                        variant={"outline"}
-                                                        className={cn(
-                                                            "w-full pl-3 text-left font-normal",
-                                                            !field.value && "text-muted-foreground"
-                                                        )}
-                                                    >
-                                                        {field.value ? (
-                                                            format(field.value, 'yyyy-MM-dd')
-                                                        ) : (
-                                                            <span>Pick a date</span>
-                                                        )}
-                                                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                                                    </Button>
-                                                </FormControl>
-                                            </PopoverTrigger>
-                                            <PopoverContent className="w-auto p-0" align="start">
-                                                <Calendar
-                                                    mode="single"
-                                                    selected={field.value}
-                                                    onSelect={field.onChange}
-                                                    disabled={(date) =>
-                                                        date > new Date() || date < new Date("1900-01-01")
-                                                    }
-                                                    initialFocus
-                                                />
-                                            </PopoverContent>
-                                        </Popover>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                            <FormField
-                                control={form.control}
-                                name="status"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Status *</FormLabel>
-                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                            <FormControl>
-                                                <SelectTrigger>
-                                                    <SelectValue placeholder="Select a status" />
-                                                </SelectTrigger>
-                                            </FormControl>
-                                            <SelectContent>
-                                                {Object.values(StatusEnum).map((status) => (
-                                                    <SelectItem key={status} value={status}>
-                                                        {status.charAt(0) + status.slice(1).toLowerCase()}
-                                                    </SelectItem>
-                                                ))}
-                                            </SelectContent>
-                                        </Select>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                        </div>
-                        <div className="space-y-4">
-                            <div className="flex items-center justify-between">
-                                <h3 className="text-lg font-medium">Addresses</h3>
-                                <Button
-                                    type="button"
-                                    variant="outline"
-                                    size="sm"
-                                    onClick={() => append({
-                                        address_type: AddressTypeEnum.HOME,
-                                        street_address: "",
-                                        city: "",
-                                        state: StateEnum.CA,
-                                        postal_code: "",
-                                        is_primary: false,
-                                    })}
-                                >
-                                    <Plus className="mr-2 h-4 w-4" />
-                                    Add Address
-                                </Button>
-                            </div>
-                            {fields.map((field, index) => (
-                                <AddressForm
-                                    key={field.id}
-                                    index={index}
-                                    control={form.control}
-                                    remove={() => remove(index)}
-                                />
-                            ))}
-                        </div>
-
-                        {/* Custom Fields Section */}
-                        {customFields.length > 0 && (
-                            <div className="space-y-4">
-                                <h3 className="text-lg font-medium">Custom Fields</h3>
-                                <div className="grid grid-cols-2 gap-4">
-                                    {customFields.map((customField) => (
-                                        <FormField
-                                            key={customField.id}
-                                            control={form.control}
-                                            name={`custom_fields.${customField.name}`}
-                                            render={({ field }) => (
-                                                <FormItem>
-                                                    <FormLabel>{customField.name}</FormLabel>
-                                                    <FormControl>
-                                                        <Input
-                                                            type={customField.field_type === FieldTypeEnum.NUMBER ? "number" : "text"}
-                                                            placeholder={`Enter ${customField.name.toLowerCase()}`}
-                                                            {...field}
-                                                            value={field.value ?? ''}
-                                                        />
-                                                    </FormControl>
-                                                    <FormMessage />
-                                                </FormItem>
-                                            )}
-                                        />
-                                    ))}
-                                </div>
-                            </div>
-                        )}
-
+                        <PersonalInfoSection control={form.control} />
+                        <AddressesSection control={form.control} />
+                        <CustomFieldsSection
+                            control={form.control}
+                            customFields={customFields}
+                        />
                         <DialogFooter className="sticky bottom-0 bg-background pt-4">
                             <Button type="submit" disabled={isSubmitting}>
                                 {isSubmitting ? "Saving..." : "Save"}
@@ -391,5 +183,200 @@ export function RegisterPatientForm({ customFields }: RegisterPatientFormProps) 
                 </Form>
             </DialogContent>
         </Dialog>
+    )
+}
+
+// Personal Info Section Component
+function PersonalInfoSection({ control }: { control: Control<FormValues> }) {
+    return (
+        <div className="space-y-4">
+            <div className="grid grid-cols-3 gap-4">
+                <FormField
+                    control={control}
+                    name="first_name"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>First Name *</FormLabel>
+                            <FormControl>
+                                <Input placeholder="Enter first name" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    control={control}
+                    name="middle_name"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Middle Name</FormLabel>
+                            <FormControl>
+                                <Input placeholder="Enter middle name" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    control={control}
+                    name="last_name"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Last Name *</FormLabel>
+                            <FormControl>
+                                <Input placeholder="Enter last name" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+                <FormField
+                    control={control}
+                    name="date_of_birth"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Date of Birth *</FormLabel>
+                            <Popover>
+                                <PopoverTrigger asChild>
+                                    <FormControl>
+                                        <Button
+                                            variant={"outline"}
+                                            className={cn(
+                                                "w-full pl-3 text-left font-normal",
+                                                !field.value && "text-muted-foreground"
+                                            )}
+                                        >
+                                            {field.value ? (
+                                                format(field.value, 'yyyy-MM-dd')
+                                            ) : (
+                                                <span>Pick a date</span>
+                                            )}
+                                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                        </Button>
+                                    </FormControl>
+                                </PopoverTrigger>
+                                <PopoverContent className="w-auto p-0" align="start">
+                                    <Calendar
+                                        mode="single"
+                                        selected={field.value}
+                                        onSelect={field.onChange}
+                                        disabled={(date) =>
+                                            date > new Date() || date < new Date("1900-01-01")
+                                        }
+                                        initialFocus
+                                    />
+                                </PopoverContent>
+                            </Popover>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    control={control}
+                    name="status"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Status *</FormLabel>
+                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                <FormControl>
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Select a status" />
+                                    </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                    {Object.values(StatusEnum).map((status) => (
+                                        <SelectItem key={status} value={status}>
+                                            {status.charAt(0) + status.slice(1).toLowerCase()}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+            </div>
+        </div>
+    )
+}
+
+// Addresses Section Component
+function AddressesSection({ control }: {
+    control: Control<FormValues>
+}) {
+    const { fields, append, remove } = useFieldArray({
+        control: control,
+        name: "addresses",
+    });
+
+    return (
+        <div className="space-y-4">
+            <div className="flex items-center justify-between">
+                <h3 className="text-lg font-medium">Addresses</h3>
+                <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => append({
+                        address_type: AddressTypeEnum.HOME,
+                        street_address: "",
+                        city: "",
+                        state: StateEnum.CA,
+                        postal_code: "",
+                        is_primary: false,
+                    })}
+                >
+                    <Plus className="mr-2 h-4 w-4" />
+                    Add Address
+                </Button>
+            </div>
+            {fields.map((field, index) => (
+                <AddressForm
+                    key={field.id}
+                    index={index}
+                    control={control}
+                    remove={() => remove(index)}
+                />
+            ))}
+        </div>
+    )
+}
+
+// Custom Fields Section Component
+function CustomFieldsSection({ control, customFields }: {
+    control: Control<FormValues>,
+    customFields: PatientCustomField[]
+}) {
+    if (customFields.length === 0) return null;
+
+    return (
+        <div className="space-y-4">
+            <h3 className="text-lg font-medium">Custom Fields</h3>
+            <div className="grid grid-cols-2 gap-4">
+                {customFields.map((customField) => (
+                    <FormField
+                        key={customField.id}
+                        control={control}
+                        name={`custom_fields.${customField.name}`}
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>{customField.name}</FormLabel>
+                                <FormControl>
+                                    <Input
+                                        type={customField.field_type === FieldTypeEnum.NUMBER ? "number" : "text"}
+                                        placeholder={`Enter ${customField.name.toLowerCase()}`}
+                                        {...field}
+                                        value={field.value ?? ''}
+                                    />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                ))}
+            </div>
+        </div>
     )
 }

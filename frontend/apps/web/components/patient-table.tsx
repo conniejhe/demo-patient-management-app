@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query'
 import { getPatients, usePatientApi } from '@/lib/patient-api'
 import { PaginatedPatientListList } from '@frontend/types/api'
 import { PatientCustomField } from '@frontend/types/api'
-import { DataTable } from './data-table'
+import { DataTable } from './data-table-utils/data-table'
 import { patientColumns } from './patient-columns'
 
 interface PatientTableProps {

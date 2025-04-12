@@ -1,5 +1,5 @@
 import { changePasswordAction } from '@/actions/change-password-action'
-import { ChangePaswordForm } from '@/components/forms/change-password-form'
+import { ChangePaswordForm } from '@/components/forms/account-management/change-password-form'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {

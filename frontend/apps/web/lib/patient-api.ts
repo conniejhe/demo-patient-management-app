@@ -1,7 +1,7 @@
 import { getApiClient } from './api'
 import { useSession } from 'next-auth/react'
 import { PaginatedPatientListList } from '@frontend/types/api/models/PaginatedPatientListList'
-import { PaginatedPatientCustomFieldList, PatientCreate, PatientCustomFieldValueCreate } from '@frontend/types/api'
+import { PaginatedPatientCustomFieldList, PatientCreate } from '@frontend/types/api'
 
 export async function getPatients(session?: any): Promise<PaginatedPatientListList> {
   try {

@@ -1,4 +1,4 @@
-import { LoginForm } from '@/components/forms/login-form'
+import { LoginForm } from '@/components/forms/account-management/login-form'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
