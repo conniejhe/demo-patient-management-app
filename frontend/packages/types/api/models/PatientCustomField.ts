@@ -6,7 +6,7 @@ import type { FieldTypeEnum } from './FieldTypeEnum';
 export type PatientCustomField = {
     readonly id: number;
     name: string;
-    field_type?: FieldTypeEnum;
+    field_type: FieldTypeEnum;
     description?: string | null;
 };
 

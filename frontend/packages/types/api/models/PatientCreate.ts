@@ -13,7 +13,7 @@ export type PatientCreate = {
     middle_name?: string | null;
     last_name: string;
     date_of_birth: string;
-    status?: StatusEnum;
+    status: StatusEnum;
     addresses: Array<PatientAddressCreate>;
     custom_field_values?: Array<PatientCustomFieldValueCreate>;
 };

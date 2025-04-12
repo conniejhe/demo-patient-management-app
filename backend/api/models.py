@@ -51,8 +51,7 @@ class CustomField(models.Model):
     field_type = models.CharField(
         _("field type"),
         max_length=20,
-        choices=CustomFieldType.choices,
-        default=CustomFieldType.TEXT
+        choices=CustomFieldType.choices
     )
     description = models.TextField(_("description"), blank=True, null=True)
     created_at = models.DateTimeField(_("created at"), auto_now_add=True)
@@ -83,7 +82,6 @@ class Patient(models.Model):
         _("status"),
         max_length=20,
         choices=PatientStatus.choices,
-        default=PatientStatus.INQUIRY
     )
     created_at = models.DateTimeField(_("created at"), auto_now_add=True)
     modified_at = models.DateTimeField(_("modified at"), auto_now=True)
@@ -112,19 +110,17 @@ class PatientAddress(models.Model):
     address_type = models.CharField(
         _("address type"),
         max_length=4,
-        choices=AddressType.choices,
-        default=AddressType.HOME
+        choices=AddressType.choices
     )
     street_address = models.CharField(_("street address"), max_length=255)
     city = models.CharField(_("city"), max_length=100)
     state = models.CharField(
         _("state"),
         max_length=2,
-        choices=StateChoices.choices,
-        default=StateChoices.CA
+        choices=StateChoices.choices
     )
     postal_code = models.CharField(_("postal code"), max_length=20)
-    is_primary = models.BooleanField(_("primary address"), default=False)
+    is_primary = models.BooleanField(_("primary address"))
     created_at = models.DateTimeField(_("created at"), auto_now_add=True)
     modified_at = models.DateTimeField(_("modified at"), auto_now=True)
 

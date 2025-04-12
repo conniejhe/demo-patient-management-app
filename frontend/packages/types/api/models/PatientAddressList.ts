@@ -3,9 +3,14 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { AddressTypeEnum } from './AddressTypeEnum';
+import type { StateEnum } from './StateEnum';
 export type PatientAddressList = {
-    address_type?: AddressTypeEnum;
+    address_type: AddressTypeEnum;
     readonly full_address: string;
-    is_primary?: boolean;
+    street_address: string;
+    city: string;
+    state: StateEnum;
+    postal_code: string;
+    is_primary: boolean;
 };
 

@@ -5,11 +5,11 @@
 import type { AddressTypeEnum } from './AddressTypeEnum';
 import type { StateEnum } from './StateEnum';
 export type PatientAddressCreate = {
-    address_type?: AddressTypeEnum;
+    address_type: AddressTypeEnum;
     street_address: string;
     city: string;
-    state?: StateEnum;
+    state: StateEnum;
     postal_code: string;
-    is_primary?: boolean;
+    is_primary: boolean;
 };
 

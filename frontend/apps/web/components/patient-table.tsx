@@ -6,6 +6,7 @@ import { PaginatedPatientListList } from '@frontend/types/api'
 import { PatientCustomField } from '@frontend/types/api'
 import { DataTable } from './data-table-utils/data-table'
 import { patientColumns } from './patient-columns'
+import { EditPatientForm } from './forms/edit-patient-form'
 
 interface PatientTableProps {
     customFields: PatientCustomField[]
@@ -21,7 +22,6 @@ export function PatientTable({ customFields }: PatientTableProps) {
         },
         enabled: !!session,
     })
-    console.log(data)
 
     const patientColumnsWithCustomFields = [...patientColumns];
     if (customFields) {
@@ -32,6 +32,12 @@ export function PatientTable({ customFields }: PatientTableProps) {
                     return row.original.custom_field_values.find((field) => field.custom_field === customField.name)?.value
                 }
             })
+        })
+        patientColumnsWithCustomFields.unshift({
+            id: "actions",
+            cell: ({ row }) => {
+                return <EditPatientForm customFields={customFields} patient={row.original} />
+            }
         })
     }
 

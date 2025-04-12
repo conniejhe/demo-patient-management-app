@@ -135,7 +135,7 @@ class PatientCustomFieldValueSerializer(serializers.ModelSerializer):
 class PatientAddressListSerializer(serializers.ModelSerializer):
     class Meta:
         model = PatientAddress
-        fields = ['address_type', 'full_address', 'is_primary']
+        fields = ['address_type', 'full_address', 'street_address', 'city', 'state', 'postal_code', 'is_primary']
 
 class PatientAddressCreateSerializer(serializers.ModelSerializer):
     class Meta:

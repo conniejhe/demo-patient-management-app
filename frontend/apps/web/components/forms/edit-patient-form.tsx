@@ -10,35 +10,35 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@frontend/ui/components/dialog"
-import { UserPlus } from "lucide-react"
+import { Pencil } from "lucide-react"
 
 import {
     Form,
 } from "@frontend/ui/components/form"
-import { PatientCustomField } from "@frontend/types/api"
+import { PatientCustomField, PatientList } from "@frontend/types/api"
 import { usePatientForm } from "@/lib/usePatientForm"
 import { PersonalInfoSection, AddressesSection, CustomFieldsSection } from "./patient-form-sections"
 
-interface RegisterPatientFormProps {
+interface EditPatientFormProps {
     customFields: PatientCustomField[]
+    patient: PatientList
 }
 
-export function RegisterPatientForm({ customFields }: RegisterPatientFormProps) {
-    const { form, isSubmitting, open, setOpen, onSubmit } = usePatientForm({ customFields, mode: "create" });
+export function EditPatientForm({ customFields, patient }: EditPatientFormProps) {
+    const { form, isSubmitting, open, setOpen, onSubmit } = usePatientForm({ customFields, mode: "edit", patient });
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button variant="outline">
-                    <UserPlus className="mr-2 h-4 w-4" />
-                    Create Patient
+                <Button variant="outline" size="icon">
+                    <Pencil />
                 </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[800px] max-h-[90vh] flex flex-col">
                 <DialogHeader>
-                    <DialogTitle>Create new patient profile</DialogTitle>
+                    <DialogTitle>Edit patient profile</DialogTitle>
                     <DialogDescription>
-                        Register a new patient. Click save when you're done.
+                        Edit the patient profile. Click save when you're done.
                     </DialogDescription>
                 </DialogHeader>
                 <Form {...form}>

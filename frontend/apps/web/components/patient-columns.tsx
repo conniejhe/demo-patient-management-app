@@ -6,17 +6,8 @@ import { PatientList, PatientAddressList } from "@frontend/types/api"
 import { Badge } from "@frontend/ui/components/badge"
 import { StatusEnum } from "@frontend/types/api"
 import { Button } from "@frontend/ui/components/button"
-import { PatientEditButton } from "./patient-edit-button"
 
 export const patientColumns: ColumnDef<PatientList>[] = [
-    {
-        id: "actions",
-        cell: ({ row }) => {
-            return (
-                <PatientEditButton row={row.original} />
-            )
-        }
-    },
     {
         header: ({ column }) => {
             return (

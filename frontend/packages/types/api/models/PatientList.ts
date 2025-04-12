@@ -15,7 +15,7 @@ export type PatientList = {
     middle_name?: string | null;
     last_name: string;
     date_of_birth: string;
-    status?: StatusEnum;
+    status: StatusEnum;
     readonly created_at: string;
     addresses: Array<PatientAddressList>;
     custom_field_values: Array<PatientCustomFieldValueList>;
