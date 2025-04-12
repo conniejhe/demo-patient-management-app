@@ -1,13 +1,17 @@
 'use client'
 
 import { useQuery } from '@tanstack/react-query'
-import { getCustomFields, getPatients, usePatientApi } from '@/lib/patient-api'
+import { getPatients, usePatientApi } from '@/lib/patient-api'
 import { PaginatedPatientListList } from '@frontend/types/api'
-import { PaginatedPatientCustomFieldList } from '@frontend/types/api'
+import { PatientCustomField } from '@frontend/types/api'
 import { DataTable } from './data-table'
 import { patientColumns } from './patient-columns'
 
-export function PatientTable() {
+interface PatientTableProps {
+    customFields: PatientCustomField[]
+}
+
+export function PatientTable({ customFields }: PatientTableProps) {
     const { session } = usePatientApi()
 
     const { data, isLoading, isError, error } = useQuery<PaginatedPatientListList>({
@@ -17,18 +21,11 @@ export function PatientTable() {
         },
         enabled: !!session,
     })
-
-    const { data: customFields, isLoading: customFieldsLoading } = useQuery<PaginatedPatientCustomFieldList>({
-        queryKey: ['customFields'],
-        queryFn: () => {
-            return getCustomFields(session)
-        },
-        enabled: !!session,
-    })
+    console.log(data)
 
     const patientColumnsWithCustomFields = [...patientColumns];
     if (customFields) {
-        customFields.results.forEach((customField) => {
+        customFields.forEach((customField) => {
             patientColumnsWithCustomFields.push({
                 header: customField.name,
                 cell: ({ row }) => {

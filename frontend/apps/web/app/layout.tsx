@@ -3,6 +3,7 @@ import { QueryProvider } from '@/providers/query-provider'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import { twMerge } from 'tailwind-merge'
+import { Toaster } from '@frontend/ui/components/toaster'
 
 import '@frontend/ui/styles/globals.css'
 
@@ -28,6 +29,7 @@ export default function RootLayout({
             <div className="px-6">
               <div className="container mx-auto my-12 max-w-6xl">{children}</div>
             </div>
+            <Toaster />
           </AuthProvider>
         </QueryProvider>
       </body>
