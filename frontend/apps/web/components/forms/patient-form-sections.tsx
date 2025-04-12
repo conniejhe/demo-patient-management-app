@@ -39,6 +39,7 @@ type FormValues = z.infer<typeof patientFormSchema>;
 export function PersonalInfoSection({ control }: { control: Control<FormValues> }) {
     return (
         <div className="space-y-4">
+            <h3 className="text-lg font-medium">Personal Information</h3>
             <div className="grid grid-cols-3 gap-4">
                 <FormField
                     control={control}

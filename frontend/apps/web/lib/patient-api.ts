@@ -1,7 +1,7 @@
 import { getApiClient } from './api'
 import { useSession } from 'next-auth/react'
 import { PaginatedPatientListList } from '@frontend/types/api/models/PaginatedPatientListList'
-import { PaginatedPatientCustomFieldList, PatientCreate } from '@frontend/types/api'
+import { PaginatedPatientCustomFieldList, PatientCreate, PatchedPatientCreate } from '@frontend/types/api'
 
 export async function getPatients(session?: any): Promise<PaginatedPatientListList> {
   try {
@@ -37,6 +37,22 @@ export async function createPatient(
     return response
   } catch (error) {
     console.error('Error creating patient:', error)
+    throw error
+  }
+}
+
+export async function updatePatient(
+  id: number,
+  patientData: PatchedPatientCreate,
+  session?: any
+): Promise<any> {
+  try {
+    const api = await getApiClient(session)
+
+    const response = await api.patients.patientsPartialUpdate(id, patientData)
+    return response
+  } catch (error) {
+    console.error('Error updating patient:', error)
     throw error
   }
 }

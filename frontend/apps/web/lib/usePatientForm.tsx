@@ -1,6 +1,6 @@
 'use client'
 
-import { createPatient, usePatientApi } from "@/lib/patient-api"
+import { createPatient, updatePatient, usePatientApi } from "@/lib/patient-api"
 import { useState } from "react"
 import { useToast } from "@frontend/ui/hooks/use-toast"
 import { useQueryClient } from "@tanstack/react-query"
@@ -20,8 +20,10 @@ interface UsePatientFormProps {
     patient?: PatientList
 }
 
-const FORM_DEFAULT_VALUES = {
+const FORM_DEFAULT_VALUES: FormValues = {
     first_name: "",
+    middle_name: "",
+    date_of_birth: new Date(),
     last_name: "",
     status: StatusEnum.INQUIRY,
     addresses: [{
@@ -38,6 +40,7 @@ function getInitialValuesFromPatient(patient: PatientList) {
     return {
         ...patient,
         date_of_birth: new Date(patient.date_of_birth),
+        middle_name: patient.middle_name || "",
     }
 }
 // Custom hook for patient form logic
@@ -104,21 +107,26 @@ export function usePatientForm({ customFields, mode, patient }: UsePatientFormPr
                 })
             }
 
-            const newPatient: PatientCreate = {
+            const patientData: PatientCreate = {
                 ...values,
                 date_of_birth: format(values.date_of_birth, 'yyyy-MM-dd'),
                 custom_field_values: customFieldValues
             }
-            await createPatient(newPatient, session);
 
-            // Show success message
-            toast({
-                title: "New Patient Created",
-                description: "The patient has been successfully registered in the system.",
-            });
+            if (mode === "edit" && patient) {
+                await updatePatient(patient.id, patientData, session);
+                toast({
+                    title: "Patient Updated",
+                    description: "The patient has been successfully updated.",
+                });
+            } else {
+                await createPatient(patientData, session);
+                toast({
+                    title: "New Patient Created",
+                    description: "The patient has been successfully registered in the system.",
+                });
+            }
             form.reset();
-
-            // Close the dialog
             setOpen(false);
 
             // Invalidate the patients query to refresh the table
