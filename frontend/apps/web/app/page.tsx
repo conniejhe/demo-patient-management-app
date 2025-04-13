@@ -1,4 +1,4 @@
-import { PagesOverview } from '@/components/patient-table/pages-overview'
+import { PagesOverview } from '@/components/pages-overview'
 import { UserSession } from '@/components/user-session'
 import { Button } from '@frontend/ui/components/button'
 import Link from 'next/link'
