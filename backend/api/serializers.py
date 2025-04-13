@@ -126,6 +126,11 @@ class PatientCustomFieldSerializer(serializers.ModelSerializer):
         model = CustomField
         fields = ['id', 'name', 'field_type', 'description']
 
+class PatientCustomFieldCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomField
+        fields = ['name', 'field_type', 'description']
+
 class PatientCustomFieldValueSerializer(serializers.ModelSerializer):
     custom_field = PatientCustomFieldSerializer()
     class Meta:

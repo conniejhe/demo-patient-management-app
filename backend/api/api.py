@@ -15,6 +15,7 @@ from .serializers import (
     PatientCreateSerializer,
     PatientListSerializer,
     PatientCustomFieldSerializer,
+    PatientCustomFieldCreateSerializer,
 )
 
 User = get_user_model()
@@ -126,6 +127,11 @@ class CustomFieldViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return self.queryset.filter(provider=self.request.user)
+
+    def get_serializer_class(self):
+        if self.action == "create":
+            return PatientCustomFieldCreateSerializer
+        return PatientCustomFieldSerializer
 
     def perform_create(self, serializer):
         serializer.save(provider=self.request.user)

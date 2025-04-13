@@ -49,7 +49,6 @@ export function usePatientForm({ customFields, mode, patient }: UsePatientFormPr
     const { toast } = useToast();
     const queryClient = useQueryClient();
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [open, setOpen] = useState(false);
 
     // Initialize custom fields with empty values
     const initialCustomFields: Record<string, string | number | null> = {};
@@ -127,8 +126,6 @@ export function usePatientForm({ customFields, mode, patient }: UsePatientFormPr
                 });
             }
             form.reset();
-            setOpen(false);
-
             // Invalidate the patients query to refresh the table
             queryClient.invalidateQueries({ queryKey: ['patients'] });
         } catch (error) {
@@ -148,8 +145,6 @@ export function usePatientForm({ customFields, mode, patient }: UsePatientFormPr
     return {
         form,
         isSubmitting,
-        open,
-        setOpen,
         onSubmit
     };
 }

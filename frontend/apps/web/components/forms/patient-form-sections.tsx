@@ -178,7 +178,7 @@ export function AddressesSection({ control }: {
                         is_primary: false,
                     })}
                 >
-                    <Plus className="mr-2 h-4 w-4" />
+                    <Plus />
                     Add Address
                 </Button>
             </div>

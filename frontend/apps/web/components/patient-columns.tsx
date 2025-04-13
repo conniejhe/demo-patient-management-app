@@ -89,7 +89,7 @@ export const patientColumns: ColumnDef<PatientList>[] = [
         }
     },
     {
-        header: "Address",
+        header: "Primary Address",
         cell: ({ row }) => {
             const addresses = row.original.addresses
             const primaryAddress = addresses.find((address: PatientAddressList) => address.is_primary)

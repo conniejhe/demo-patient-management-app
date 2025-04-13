@@ -1,7 +1,7 @@
 import { getApiClient } from './api'
 import { useSession } from 'next-auth/react'
 import { PaginatedPatientListList } from '@frontend/types/api/models/PaginatedPatientListList'
-import { PaginatedPatientCustomFieldList, PatientCreate, PatchedPatientCreate } from '@frontend/types/api'
+import { PaginatedPatientCustomFieldList, PatientCreate, PatchedPatientCreate, PatientCustomFieldCreate } from '@frontend/types/api'
 
 export async function getPatients(session?: any): Promise<PaginatedPatientListList> {
   try {
@@ -32,7 +32,6 @@ export async function createPatient(
 ): Promise<any> {
   try {
     const api = await getApiClient(session)
-    
     const response = await api.patients.patientsCreate(patientData)
     return response
   } catch (error) {
@@ -48,11 +47,38 @@ export async function updatePatient(
 ): Promise<any> {
   try {
     const api = await getApiClient(session)
-
     const response = await api.patients.patientsPartialUpdate(id, patientData)
     return response
   } catch (error) {
     console.error('Error updating patient:', error)
+    throw error
+  }
+}
+
+export async function createCustomField(
+  customFieldData: PatientCustomFieldCreate,
+  session?: any
+): Promise<any> {
+  try {
+    const api = await getApiClient(session)
+    const response = await api.customFields.customFieldsCreate(customFieldData)
+    return response
+  } catch (error) {
+    console.error('Error creating custom field:', error)
+    throw error
+  }
+} 
+
+export async function deleteCustomField(
+  id: number,
+  session?: any
+): Promise<any> {
+  try {
+    const api = await getApiClient(session)
+    const response = await api.customFields.customFieldsDestroy(id)
+    return response
+  } catch (error) {
+    console.error('Error deleting custom field:', error)
     throw error
   }
 }

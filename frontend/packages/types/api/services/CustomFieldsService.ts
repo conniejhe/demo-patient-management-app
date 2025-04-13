@@ -5,6 +5,7 @@
 import type { PaginatedPatientCustomFieldList } from '../models/PaginatedPatientCustomFieldList';
 import type { PatchedPatientCustomField } from '../models/PatchedPatientCustomField';
 import type { PatientCustomField } from '../models/PatientCustomField';
+import type { PatientCustomFieldCreate } from '../models/PatientCustomFieldCreate';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import type { BaseHttpRequest } from '../core/BaseHttpRequest';
 export class CustomFieldsService {
@@ -33,12 +34,12 @@ export class CustomFieldsService {
      *
      * Provides CRUD operations for custom fields.
      * @param requestBody
-     * @returns PatientCustomField
+     * @returns PatientCustomFieldCreate
      * @throws ApiError
      */
     public customFieldsCreate(
-        requestBody: PatientCustomField,
-    ): CancelablePromise<PatientCustomField> {
+        requestBody: PatientCustomFieldCreate,
+    ): CancelablePromise<PatientCustomFieldCreate> {
         return this.httpRequest.request({
             method: 'POST',
             url: '/api/custom-fields/',

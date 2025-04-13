@@ -10,7 +10,8 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@frontend/ui/components/dialog"
-import { UserPlus } from "lucide-react"
+import { UserPlus, Loader2 } from "lucide-react"
+import { useState } from "react"
 
 import {
     Form,
@@ -24,13 +25,14 @@ interface RegisterPatientFormProps {
 }
 
 export function RegisterPatientForm({ customFields }: RegisterPatientFormProps) {
-    const { form, isSubmitting, open, setOpen, onSubmit } = usePatientForm({ customFields, mode: "create" });
+    const [open, setOpen] = useState(false)
+    const { form, isSubmitting, onSubmit } = usePatientForm({ customFields, mode: "create" });
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
                 <Button variant="outline">
-                    <UserPlus className="mr-2 h-4 w-4" />
+                    <UserPlus />
                     Create Patient
                 </Button>
             </DialogTrigger>
@@ -51,7 +53,8 @@ export function RegisterPatientForm({ customFields }: RegisterPatientFormProps) 
                         />
                         <DialogFooter className="sticky bottom-0 bg-background pt-4">
                             <Button type="submit" disabled={isSubmitting}>
-                                {isSubmitting ? "Saving..." : "Save"}
+                                {isSubmitting && <Loader2 className="animate-spin" />}
+                                Save
                             </Button>
                         </DialogFooter>
                     </form>

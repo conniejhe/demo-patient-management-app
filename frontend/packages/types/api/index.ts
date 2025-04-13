@@ -21,6 +21,7 @@ export type { PatientAddressCreate } from './models/PatientAddressCreate';
 export type { PatientAddressList } from './models/PatientAddressList';
 export type { PatientCreate } from './models/PatientCreate';
 export type { PatientCustomField } from './models/PatientCustomField';
+export type { PatientCustomFieldCreate } from './models/PatientCustomFieldCreate';
 export type { PatientCustomFieldValueCreate } from './models/PatientCustomFieldValueCreate';
 export type { PatientCustomFieldValueList } from './models/PatientCustomFieldValueList';
 export type { PatientList } from './models/PatientList';

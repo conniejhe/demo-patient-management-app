@@ -5,6 +5,7 @@ import { RegisterPatientForm } from '@/components/forms/register-patient-form'
 import { useQuery } from '@tanstack/react-query'
 import { getCustomFields, usePatientApi } from '@/lib/patient-api'
 import { PaginatedPatientCustomFieldList } from '@frontend/types/api'
+import CustomFields from '@/components/custom-fields'
 
 export default function PatientsPage() {
     const { session } = usePatientApi()
@@ -19,14 +20,14 @@ export default function PatientsPage() {
 
     return (
         <div className="space-y-6">
-            <div className="flex justify-between items-center">
+            <div className="flex items-center justify-between">
                 <h1 className="text-2xl font-bold">Patient Dashboard</h1>
-                <RegisterPatientForm customFields={customFields?.results || []} />
+                <div className="flex items-center gap-4">
+                    <RegisterPatientForm customFields={customFields?.results || []} />
+                    <CustomFields fields={customFields?.results || []} />
+                </div>
             </div>
-
-            <div className="bg-white rounded-lg shadow">
-                <PatientTable customFields={customFields?.results || []} />
-            </div>
+            <PatientTable customFields={customFields?.results || []} />
         </div>
     )
 } 

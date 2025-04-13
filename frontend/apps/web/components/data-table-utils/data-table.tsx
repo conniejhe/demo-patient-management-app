@@ -9,6 +9,7 @@ import {
     getCoreRowModel,
     getFilteredRowModel,
     getSortedRowModel,
+    getPaginationRowModel,
     useReactTable,
 } from "@tanstack/react-table"
 
@@ -22,6 +23,7 @@ import {
 } from "@frontend/ui/components/table"
 
 import { DataTableToolbar } from "./data-table-toolbar"
+import { DataTablePagination } from "./data-table-pagination"
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[]
@@ -32,7 +34,9 @@ export function DataTable<TData, TValue>({
     columns,
     data,
 }: DataTableProps<TData, TValue>) {
-    const [sorting, setSorting] = React.useState<SortingState>([])
+    const [sorting, setSorting] = React.useState<SortingState>([
+        { id: 'created_at', desc: true }, // Default sorting by created_at
+    ])
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
         []
     )
@@ -49,12 +53,13 @@ export function DataTable<TData, TValue>({
             sorting,
             columnFilters,
         },
+        getPaginationRowModel: getPaginationRowModel(),
     })
 
     return (
         <div className="space-y-4">
             <DataTableToolbar table={table} />
-            <div className="rounded-md border overflow-x-auto relative">
+            <div className="rounded-md border overflow-x-auto relative bg-white shadow">
                 <Table>
                     <TableHeader>
                         {table.getHeaderGroups().map((headerGroup) => (
@@ -98,6 +103,7 @@ export function DataTable<TData, TValue>({
                     </TableBody>
                 </Table>
             </div>
+            <DataTablePagination table={table} />
         </div>
     )
 }
