@@ -17,7 +17,7 @@ import {
 } from "@frontend/ui/components/form"
 import { PatientCustomField, PatientList } from "@frontend/types/api"
 import { usePatientForm } from "@/lib/usePatientForm"
-import { PersonalInfoSection, AddressesSection, CustomFieldsSection } from "./patient-form-sections"
+import { PersonalInfoSection, AddressesSection, CustomFieldsSection } from "@/components/forms/patient/patient-form-sections"
 import { useState } from "react"
 
 interface EditPatientFormProps {

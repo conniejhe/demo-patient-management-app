@@ -14,8 +14,8 @@ export const addressSchema = z.object({
     state: z.nativeEnum(StateEnum, {
         required_error: "Please select a state.",
     }),
-    postal_code: z.string().min(1, {
-        message: "Postal code is required.",
+    postal_code: z.string().min(5, {
+        message: "Postal code is required and must be at least 5 characters.",
     }),
     is_primary: z.boolean().default(false),
 })

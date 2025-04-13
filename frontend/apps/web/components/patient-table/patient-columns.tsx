@@ -16,7 +16,7 @@ export const patientColumns: ColumnDef<PatientList>[] = [
                     onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
                 >
                     Name
-                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                    <ArrowUpDown />
                 </Button>
             )
         },
@@ -70,6 +70,9 @@ export const patientColumns: ColumnDef<PatientList>[] = [
     {
         header: "Date of Birth",
         accessorKey: "date_of_birth",
+        cell: ({ row }) => {
+            return <div className="min-w-[100px]">{row.original.date_of_birth}</div>
+        }
     },
     {
         header: "Status",
@@ -93,15 +96,25 @@ export const patientColumns: ColumnDef<PatientList>[] = [
         cell: ({ row }) => {
             const addresses = row.original.addresses
             const primaryAddress = addresses.find((address: PatientAddressList) => address.is_primary)
-            return primaryAddress?.full_address
+            return <div className="min-w-[200px]">{primaryAddress?.full_address}</div>
         }
     },
     {
-        header: "Created At",
+        header: ({ column }) => {
+            return (
+                <Button
+                    variant="ghost"
+                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                >
+                    Created At
+                    <ArrowUpDown />
+                </Button>
+            )
+        },
         accessorKey: "created_at",
         cell: ({ row }) => {
             const createdAt = row.original.created_at
-            return new Date(createdAt).toLocaleString(undefined, {
+            return new Date(createdAt).toLocaleString("en-US", {
                 year: 'numeric',
                 month: 'numeric',
                 day: 'numeric',

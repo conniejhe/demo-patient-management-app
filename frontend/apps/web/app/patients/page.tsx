@@ -1,11 +1,11 @@
 'use client'
 
-import { PatientTable } from '@/components/patient-table'
-import { RegisterPatientForm } from '@/components/forms/register-patient-form'
+import { PatientTable } from '@/components/patient-table/patient-table'
+import { RegisterPatientForm } from '@/components/forms/patient/register-patient-form'
 import { useQuery } from '@tanstack/react-query'
 import { getCustomFields, usePatientApi } from '@/lib/patient-api'
 import { PaginatedPatientCustomFieldList } from '@frontend/types/api'
-import CustomFields from '@/components/custom-fields'
+import CustomFields from '@/components/custom-fields/custom-fields'
 
 export default function PatientsPage() {
     const { session } = usePatientApi()

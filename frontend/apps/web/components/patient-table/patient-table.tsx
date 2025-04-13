@@ -4,9 +4,9 @@ import { useQuery } from '@tanstack/react-query'
 import { getPatients, usePatientApi } from '@/lib/patient-api'
 import { PaginatedPatientListList } from '@frontend/types/api'
 import { PatientCustomField } from '@frontend/types/api'
-import { DataTable } from './data-table-utils/data-table'
-import { patientColumns } from './patient-columns'
-import { EditPatientForm } from './forms/edit-patient-form'
+import { DataTable } from '@/components/data-table-utils/data-table'
+import { patientColumns } from '@/components/patient-table/patient-columns'
+import { EditPatientForm } from '@/components/forms/patient/edit-patient-form'
 
 interface PatientTableProps {
     customFields: PatientCustomField[]
@@ -22,6 +22,8 @@ export function PatientTable({ customFields }: PatientTableProps) {
         },
         enabled: !!session,
     })
+
+    console.log(data)
 
     const patientColumnsWithCustomFields = [...patientColumns];
     if (customFields) {

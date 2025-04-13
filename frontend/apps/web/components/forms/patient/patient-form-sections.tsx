@@ -31,7 +31,7 @@ import { cn } from "@frontend/ui/lib/utils"
 import { format } from "date-fns"
 import { CalendarIcon } from "lucide-react"
 import { AddressForm } from "./address-form"
-import { patientFormSchema } from "./patient-form-schemas"
+import { patientFormSchema } from "@/lib/patient-form-schemas"
 
 type FormValues = z.infer<typeof patientFormSchema>;
 

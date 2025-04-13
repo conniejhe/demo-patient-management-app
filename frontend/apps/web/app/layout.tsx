@@ -27,7 +27,7 @@ export default function RootLayout({
         <QueryProvider>
           <AuthProvider>
             <div className="px-6">
-              <div className="container mx-auto my-12 max-w-6xl">{children}</div>
+              <div className="container mx-auto my-12">{children}</div>
             </div>
             <Toaster />
           </AuthProvider>

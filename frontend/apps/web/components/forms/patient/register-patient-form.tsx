@@ -18,7 +18,7 @@ import {
 } from "@frontend/ui/components/form"
 import { PatientCustomField } from "@frontend/types/api"
 import { usePatientForm } from "@/lib/usePatientForm"
-import { PersonalInfoSection, AddressesSection, CustomFieldsSection } from "./patient-form-sections"
+import { PersonalInfoSection, AddressesSection, CustomFieldsSection } from "@/components/forms/patient/patient-form-sections"
 
 interface RegisterPatientFormProps {
     customFields: PatientCustomField[]

@@ -6,7 +6,7 @@ import { useToast } from "@frontend/ui/hooks/use-toast"
 import { useQueryClient } from "@tanstack/react-query"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
-import { patientFormSchema } from "@/components/forms/patient-form-schemas"
+import { patientFormSchema } from "@/lib/patient-form-schemas"
 import { StatusEnum, AddressTypeEnum, StateEnum, PatientCustomField, FieldTypeEnum, PatientCustomFieldValueCreate, PatientCreate, PatientList } from "@frontend/types/api"
 import { format } from "date-fns"
 
